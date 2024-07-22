@@ -15,7 +15,7 @@ class ProductSeeder extends Seeder
     {
         //
         $proSeed = [];
-        for ($i = 1; $i <= 100; $i++ ){
+        for ($i = 1; $i <= 100; $i++){
             $proSeed[] = [
                 'name' => 'Sản phẩm '.$i,
                 'price' => rand(1000, 10000),
