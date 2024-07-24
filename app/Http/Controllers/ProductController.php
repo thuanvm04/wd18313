@@ -8,98 +8,55 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    private $view;
-    public function __construct()
-    {
-        $this->view = [];
-    }
-
     public function index()
     {
-        //
-        // Khởi tạo model
-        $objPro = new Product();
-        $this->view['listPro'] = $objPro->loadDataWithPager();
-        // Truy vân + logic
-//        $objCate = new Category();
-//        $listCate = $objCate->loadAllCate();
-//        $arrayCate = [];
-//        foreach ($listCate as $value){
-//            $arrayCate[$value->id] = $value->name;
-//        }
-//        $this->view['listCate'] =  $arrayCate;
-            ///
-//        dd( $this->view['listCate']);
-        return view('product.index', $this->view);
+        $products = (new Product())->loadDataWithPager();
+        return view('product.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
-        $objCate = new Category();
-        $this->view['listCate'] = $objCate->loadAllCate();
-        return view('product.create', $this->view);
+        $categories = Category::all();
+        return view('product.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-        $validate = $request->validate(
-            [
-               'name'=> ['required', 'string', 'max:255'],
-                'price' => ['required', 'integer', 'min:1'],
-                'quantity' => ['required', 'integer', 'min:1'],
-                'image' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
-                'category_id' => ['required', 'exists:categories,id']
-            ],
-            [
-              'name.required'=>'Trường tên không được bỏ trống',
-              'name.string'=>'Tên bắt buộc là chuỗi',
-              'name.max'=>'Trường tên không được vượt quá 255 ký tự',
-                // Lab 6
-            ]
-        );
-//        dd($request->all());
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|exists:categories,id',
+        ], [
+            'name.required' => 'Trường tên không được bỏ trống',
+            'name.string' => 'Tên bắt buộc là chuỗi',
+            'name.max' => 'Trường tên không được vượt quá 255 ký tự',
+            'price.required' => 'Giá sản phẩm không được bỏ trống',
+            'price.numeric' => 'Giá sản phẩm phải là số',
+            'price.min' => 'Giá sản phẩm không được âm',
+            'quantity.required' => 'Số lượng không được bỏ trống',
+            'quantity.integer' => 'Số lượng phải là số nguyên',
+            'quantity.min' => 'Số lượng không được âm',
+            'image.required' => 'Hình ảnh không được bỏ trống',
+            'image.image' => 'File phải là hình ảnh',
+            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
+            'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB',
+            'category_id.required' => 'Danh mục không được bỏ trống',
+            'category_id.exists' => 'Danh mục không tồn tại',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $imageName);
+            $validatedData['image'] = 'images/' . $imageName;
+        }
+
+        Product::create($validatedData);
+
+        return redirect()->route('product.index')->with('success', 'Sản phẩm đã được thêm thành công.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(int $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(int $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, int $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(int $id)
-    {
-        //
-    }
+    // Các phương thức khác giữ nguyên
 }

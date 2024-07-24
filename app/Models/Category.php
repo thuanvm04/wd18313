@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\DB;
 class Category extends Model
 {
     use HasFactory;
+
     protected $table = 'categories';
+
     protected $fillable = [
         'id',
         'name',
@@ -17,11 +19,21 @@ class Category extends Model
         'created_at',
         'updated_at'
     ];
-    public $timestamps = false;
-    public function loadAllCate(){
-        $query = DB::table($this->table)
-            ->select($this->fillable)
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function loadAllCate()
+    {
+        return $this->all();
+    }
+
+    public function loadAllCateWithBuilder()
+    {
+        return DB::table($this->table)
+            ->select('id', 'name', 'status', 'created_at', 'updated_at')
             ->get();
-        return $query;
     }
 }

@@ -3,7 +3,14 @@
     Danh sách sản phẩm
 @endsection
 @section('content')
-    <a href="{{route('product.create')}}" class="btn btn-success">Thêm mới</a>
+    <a href="{{ route('product.create') }}" class="btn btn-success">Thêm mới</a>
+    
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <table class="table">
         <thead>
         <tr>
@@ -17,26 +24,24 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($listPro as $item)
+        @foreach($products as $item)
         <tr>
-            <th scope="row">{{$item->id}}</th>
-            <td>{{$item->name}}</td>
-            <td>{{$item->price}}</td>
-            <td>{{$item->quantity}}</td>
+            <th scope="row">{{ $item->id }}</th>
+            <td>{{ $item->name }}</td>
+            <td>{{ $item->price }}</td>
+            <td>{{ $item->quantity }}</td>
             <td>
                 @if(!isset($item->image))
                     Không có hình ảnh
                 @else
-                    {{$item->image}}
+                    <img src="{{ asset($item->image) }}" alt="{{ $item->name }}" style="max-width: 100px;">
                 @endif
             </td>
-            <td>{{$item->loadAllCategory->name}}</td>
-{{--                <td>{{$item->catename}}</td>--}}
-{{--            <td>{{$listCate[$item->category_id]}}</td>--}}
-            <td>{{$item->status}}</td>
+            <td>{{ $item->category->name }}</td>
+            <td>{{ $item->status }}</td>
         </tr>
         @endforeach
         </tbody>
     </table>
-    {{$listPro->links()}}
+    {{ $products->links() }}
 @endsection

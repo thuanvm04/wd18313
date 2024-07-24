@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -75,5 +76,23 @@ Route::controller(ProductController::class)
         Route::put('{id}/update', 'update')
             ->name('update');
         Route::delete('{id}/destroy', 'destroy')
+            ->name('destroy');
+    });
+
+    Route::controller(CategoryController::class)
+    ->name('category.')
+    ->prefix('categories/')
+    ->group(function () {
+        Route::get('/', 'index')
+            ->name('index');
+        Route::get('create', 'create')
+            ->name('create');
+        Route::post('store', 'store')
+            ->name('store');
+        Route::get('{category}/edit', 'edit')
+            ->name('edit');
+        Route::put('{category}/update', 'update')
+            ->name('update');
+        Route::delete('{category}/destroy', 'destroy')
             ->name('destroy');
     });
