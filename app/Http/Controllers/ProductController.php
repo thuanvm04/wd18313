@@ -24,13 +24,13 @@ class ProductController extends Controller
         $objPro = new Product();
         $this->view['listPro'] = $objPro->loadDataWithPager();
         // Truy vân + logic
-        $objCate = new Category();
-        $listCate = $objCate->loadAllCate();
-        $arrayCate = [];
-        foreach ($listCate as $value){
-            $arrayCate[$value->id] = $value->name;
-        }
-        $this->view['listCate'] =  $arrayCate;
+//        $objCate = new Category();
+//        $listCate = $objCate->loadAllCate();
+//        $arrayCate = [];
+//        foreach ($listCate as $value){
+//            $arrayCate[$value->id] = $value->name;
+//        }
+//        $this->view['listCate'] =  $arrayCate;
             ///
 //        dd( $this->view['listCate']);
         return view('product.index', $this->view);
@@ -42,6 +42,9 @@ class ProductController extends Controller
     public function create()
     {
         //
+        $objCate = new Category();
+        $this->view['listCate'] = $objCate->loadAllCate();
+        return view('product.create', $this->view);
     }
 
     /**
@@ -50,6 +53,22 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
+        $validate = $request->validate(
+            [
+               'name'=> ['required', 'string', 'max:255'],
+                'price' => ['required', 'integer', 'min:1'],
+                'quantity' => ['required', 'integer', 'min:1'],
+                'image' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+                'category_id' => ['required', 'exists:categories,id']
+            ],
+            [
+              'name.required'=>'Trường tên không được bỏ trống',
+              'name.string'=>'Tên bắt buộc là chuỗi',
+              'name.max'=>'Trường tên không được vượt quá 255 ký tự',
+                // Lab 6
+            ]
+        );
+//        dd($request->all());
     }
 
     /**

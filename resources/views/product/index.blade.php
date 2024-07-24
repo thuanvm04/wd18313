@@ -3,7 +3,7 @@
     Danh sách sản phẩm
 @endsection
 @section('content')
-
+    <a href="{{route('product.create')}}" class="btn btn-success">Thêm mới</a>
     <table class="table">
         <thead>
         <tr>
@@ -30,9 +30,9 @@
                     {{$item->image}}
                 @endif
             </td>
-{{--            <td>{{$item->loadAllCategory->name}}</td>--}}
+            <td>{{$item->loadAllCategory->name}}</td>
 {{--                <td>{{$item->catename}}</td>--}}
-            <td>{{$listCate[$item->category_id]}}</td>
+{{--            <td>{{$listCate[$item->category_id]}}</td>--}}
             <td>{{$item->status}}</td>
         </tr>
         @endforeach
